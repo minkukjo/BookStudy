@@ -7,11 +7,15 @@ import (
 
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))).Methods("GET")
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w,r,"./static/index.html")
-	})
+		http.ServeFile(w, r, "./static/index.html")
+	}).Methods("GET")
+
+	router.HandleFunc("/login", HandleLogin)
+
+	router.HandleFunc("/oauth/authorize", HandleCallBack)
 
 	return router
 }

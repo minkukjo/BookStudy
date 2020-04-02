@@ -8,8 +8,7 @@ type App struct{}
 
 func (a *App) Run() {
 
-	//r := NewRouter()
+	r := NewRouter()
 
-
-	http.ListenAndServe(":9090",nil)
+	http.ListenAndServe(":9090", r)
 }
