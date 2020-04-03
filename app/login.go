@@ -23,7 +23,8 @@ type User struct {
 
 var (
 	state = "login"
-	conf  = &oauth2.Config{
+
+	conf = &oauth2.Config{
 		ClientID:     "33d62682fd47b9b0152a4fa68c14d901",
 		ClientSecret: "",
 		Endpoint: oauth2.Endpoint{
