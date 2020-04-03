@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"golang.org/x/oauth2"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -14,8 +13,12 @@ type Token struct {
 	AccessToken  string `json:"access_token"`
 	TokenType    string `json:"token_type"`
 	RefreshToken string `json:"refresh_token"`
-	ExpiresIn    string `json:"expires_in"`
+	ExpiresIn    int    `json:"expires_in"`
 	Scope        string `json:"scope"`
+}
+
+type User struct {
+	Nickname string `json:"properties.nickname"`
 }
 
 var (
@@ -37,11 +40,8 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u, http.StatusTemporaryRedirect)
 }
 
-func HandleCallBack(w http.ResponseWriter, r *http.Request) {
-
+func getToken(r *http.Request) Token {
 	authorizeCode := r.FormValue("code")
-
-	fmt.Println(authorizeCode)
 
 	parameters := url.Values{}
 	parameters.Set("grant_type", "authorization_code")
@@ -49,14 +49,41 @@ func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 	parameters.Set("redirect_uri", "http://localhost:9090/oauth/authorize")
 	parameters.Set("code", authorizeCode)
 
-	resp, _ := http.PostForm("https://kauth.kakao.com/oauth/token", parameters)
+	resp, err := http.PostForm("https://kauth.kakao.com/oauth/token", parameters)
+	if err != nil {
+		panic(err)
+	}
 
 	defer resp.Body.Close()
 
-	token := new(Token)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
-	_ = json.Unmarshal(body, &token)
+	var token Token
+	if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
+		panic(err)
+	}
+
+	return token
+}
+
+func getUserInform(token Token) {
+	rq, err := http.NewRequest("GET", "https://kapi.kakao.com/v2/user/me", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rq.Header.Add("Authorization", "Bearer "+token.AccessToken)
+	client := http.Client{}
+	resp, err := client.Do(rq)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	user := User{}
+	json.NewDecoder(resp.Body).Decode(user)
+}
+
+func HandleCallBack(w http.ResponseWriter, r *http.Request) {
+
+	token := getToken(r)
 	fmt.Println(token)
 
 	state := r.FormValue("state")
