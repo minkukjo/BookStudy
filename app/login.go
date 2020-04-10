@@ -2,8 +2,8 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"golang.org/x/oauth2"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
@@ -17,8 +17,16 @@ type Token struct {
 	Scope        string `json:"scope"`
 }
 
+// Nested 처리는 아래와 같이 내부 구조체를 선언함으로써 가능
 type User struct {
-	Nickname string `json:"properties.nickname"`
+	Id          int    `json:"id"`
+	ConnectedAt string `json:"connected_at"`
+	Properties  struct {
+		Nickname string `json:"nickname"`
+	} `json:"properties"`
+	KakaoAccount struct {
+		ProfileNeedsAgreement bool `json:"profile_needs_agreement"`
+	}
 }
 
 var (
@@ -52,20 +60,20 @@ func getToken(r *http.Request) Token {
 
 	resp, err := http.PostForm("https://kauth.kakao.com/oauth/token", parameters)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	defer resp.Body.Close()
 
-	var token Token
+	token := Token{}
 	if err := json.NewDecoder(resp.Body).Decode(&token); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return token
 }
 
-func getUserInform(token Token) {
+func getUserInform(token Token) User {
 	rq, err := http.NewRequest("GET", "https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -79,18 +87,25 @@ func getUserInform(token Token) {
 	}
 	defer resp.Body.Close()
 	user := User{}
-	json.NewDecoder(resp.Body).Decode(user)
+	json.NewDecoder(resp.Body).Decode(&user)
+	return user
 }
 
 func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	t, err := template.ParseFiles("./static/main.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	token := getToken(r)
-	fmt.Println(token)
+	user := getUserInform(token)
 
 	state := r.FormValue("state")
 	if state != "login" {
 		log.Fatal("Can't Access")
 	}
 
-	http.ServeFile(w, r, "./static/main.html")
+	t.Execute(w, user)
 }
