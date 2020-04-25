@@ -94,7 +94,7 @@ func getUserInform(token Token) User {
 func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	t, err := template.ParseFiles("./static/main.html")
+	t, err := template.ParseFiles("./static/home.html")
 	if err != nil {
 		log.Fatal(err)
 	}
