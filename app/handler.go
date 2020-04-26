@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"golang.org/x/oauth2"
-	"html/template"
 	"log"
 	"net/http"
 	"net/url"
@@ -93,19 +92,14 @@ func getUserInform(token Token) User {
 
 func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	t, err := template.ParseFiles("./static/home.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	token := getToken(r)
-	user := getUserInform(token)
+	// DB에 user 저장
+	//token := getToken(r)
+	//user := getUserInform(token)
 
 	state := r.FormValue("state")
 	if state != "login" {
 		log.Fatal("Can't Access")
 	}
 
-	t.Execute(w, user)
+	http.Redirect(w, r, "/main", 301)
 }

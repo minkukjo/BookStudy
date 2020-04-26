@@ -21,21 +21,20 @@ func NewRouter() *chi.Mux {
 		r.Use(jwtauth.Verifier(tokenAuth))
 
 		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "static/index.html")
+			http.ServeFile(w, r, "public/login.html")
 		})
 
 		r.HandleFunc("/login", HandleLogin)
 
-		r.HandleFunc("/oauth/authorize", func(w http.ResponseWriter, r *http.Request) {
-			http.Redirect(w, r, "/home", 301)
+		r.HandleFunc("/main", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, "public/index.html")
 		})
-		r.HandleFunc("/home", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "static/home.html")
-		})
+
+		r.HandleFunc("/oauth/authorize", HandleCallBack)
 
 	})
 
-	r.Handle("/*", http.FileServer(http.Dir("static")))
+	r.Handle("/*", http.FileServer(http.Dir("public")))
 
 	return r
 }
