@@ -5,17 +5,19 @@
 </template>
 
 <script>
-  export default {
-    el: '#main',
-    data() {
-      return {
-        info: null
-      }
-    },
-    mounted() {
-      axios
-        .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-        .then(response => (this.info = response))
+import axios from 'axios'
+
+export default {
+  el: '#main',
+  data: function () {
+    return {
+      info: null
     }
+  },
+  mounted: function () {
+    axios
+      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+      .then(response => (this.info = response))
   }
-</script>
+}
+</script>a
