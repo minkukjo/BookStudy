@@ -1,23 +1,27 @@
 <template>
   <div class="main">
-    <h1>{{ info }}</h1>
+    <NavMenu @prop="indexHandler"></NavMenu>
+    <el-collapse-transition>
+      <Carousel v-if="activeIndex === '1'"></Carousel>
+      <Board v-if="activeIndex === '2-1'" ></Board>
+      <MyAccount v-if="activeIndex === '3-1'"></MyAccount>
+    </el-collapse-transition>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   el: '#main',
   data: function () {
     return {
-      info: null
+      activeIndex: '1'
     }
   },
-  mounted: function () {
-    axios
-      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-      .then(response => (this.info = response))
+  methods: {
+    indexHandler: function (that) {
+      this.activeIndex = that
+    }
   }
 }
-</script>a
+</script>

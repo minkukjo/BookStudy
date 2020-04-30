@@ -13,5 +13,4 @@ body
   -moz-osx-font-smoothing grayscale
   text-align center
   color #ecf0f1
-  margin-top 60px
 </style>
