@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"golang.org/x/oauth2"
 	"log"
 	"net/http"
@@ -100,7 +99,6 @@ func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.FormValue("access_token")
 		if token == "" {
-			fmt.Println("invalid token")
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
@@ -108,7 +106,6 @@ func Authenticator(next http.Handler) http.Handler {
 		userName, _ := RedisClient.Get(token).Result()
 
 		if userName == "" {
-			fmt.Println("invalid token")
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}

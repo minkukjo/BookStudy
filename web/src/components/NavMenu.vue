@@ -33,7 +33,7 @@ export default {
       this.activeIndex = key
 
       if (this.activeIndex === oldIndex && this.$route.params.id === undefined) {
-        this.$router.go()
+        this.$forceUpdate()
       } else if (this.activeIndex === '1') {
         this.$router.push('/main')
       } else if (this.activeIndex === '2-1') {
