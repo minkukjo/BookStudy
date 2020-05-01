@@ -5,7 +5,7 @@
       <template slot="title">Board</template>
       <el-menu-item index="2-1">자유 게시판</el-menu-item>
       <el-menu-item index="2-2">스터디 모집</el-menu-item>
-      <el-menu-item index="2-3">정보 게시판</el-menu-item>
+      <el-menu-item index="2-3">질문 게시판</el-menu-item>
     </el-submenu>
     <el-submenu index="3" style="float: right">
       <template slot="title"><i class="el-icon-user"></i></template>
@@ -18,17 +18,33 @@
 <script>
 export default {
   name: 'NavMenu',
+  props: {
+    propIndex: String
+  },
   data: function () {
     return {
       info: null,
-      activeIndex: '1'
+      activeIndex: this.propIndex
     }
   },
   methods: {
     handleSelect (key, keyPath) {
+      const oldIndex = this.activeIndex
       this.activeIndex = key
-      this.$emit('prop', this.activeIndex)
-      console.log(key)
+
+      if (this.activeIndex === oldIndex && this.$route.params.id === undefined) {
+        this.$router.go()
+      } else if (this.activeIndex === '1') {
+        this.$router.push('/main')
+      } else if (this.activeIndex === '2-1') {
+        this.$router.push('/main/general')
+      } else if (this.activeIndex === '2-2') {
+        this.$router.push('/main/study')
+      } else if (this.activeIndex === '2-3') {
+        this.$router.push('/main/qna')
+      } else if (this.activeIndex === '3-1') {
+        this.$router.push('/main/user')
+      }
     }
   }
 }
