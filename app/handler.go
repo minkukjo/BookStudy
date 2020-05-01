@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bookstudy/db"
 	"context"
 	"encoding/json"
 	"golang.org/x/oauth2"
@@ -13,12 +14,7 @@ import (
 type User struct {
 	Id          int    `json:"id"`
 	ConnectedAt string `json:"connected_at"`
-	Properties  struct {
-		Nickname string `json:"nickname"`
-	} `json:"properties"`
-	KakaoAccount struct {
-		ProfileNeedsAgreement bool `json:"profile_needs_agreement"`
-	}
+	Nickname    string `json:"nickname"`
 }
 
 var (
@@ -54,8 +50,14 @@ func getUserInform(token *oauth2.Token) User {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	user := User{}
-	json.NewDecoder(resp.Body).Decode(&user)
+	userJson := make(map[string]interface{})
+	json.NewDecoder(resp.Body).Decode(&userJson)
+	properties := userJson["properties"].(map[string]interface{})
+	user := User{
+		Id:          0,
+		ConnectedAt: userJson["connected_at"].(string),
+		Nickname:    properties["nickname"].(string),
+	}
 	return user
 }
 
@@ -78,7 +80,7 @@ func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	user := getUserInform(token)
 
-	err = RedisClient.Set(token.AccessToken, user.Properties.Nickname, 0).Err()
+	err = db.RedisClient.Set(token.AccessToken, user.Nickname, 0).Err()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,7 +105,7 @@ func Authenticator(next http.Handler) http.Handler {
 			return
 		}
 
-		userName, _ := RedisClient.Get(token).Result()
+		userName, _ := db.RedisClient.Get(token).Result()
 
 		if userName == "" {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
