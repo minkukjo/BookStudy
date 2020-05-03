@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bookstudy/model"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"log"
@@ -16,4 +17,48 @@ func init() {
 		log.Println("Connection Established")
 	}
 	GormClient = db
+
+	if err := GormClient.Debug().AutoMigrate(&model.User{}).Error; err != nil {
+		log.Fatal(err)
+	}
+}
+
+func Insert(object interface{}) {
+
+	tx := GormClient.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Debug().Create(object).Error; err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+		return
+	}
+
+	tx.Commit()
+}
+
+func FindFirst(object interface{}) {
+
+	tx := GormClient.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if tx.Debug().First(object).RecordNotFound() {
+		log.Println("못찾음")
+	}
+
+	if err := tx.Debug().First(object).Error; err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+		return
+	}
+
+	tx.Commit()
 }

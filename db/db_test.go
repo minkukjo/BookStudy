@@ -1,47 +1,46 @@
 package db
 
 import (
-	"log"
+	"fmt"
 	"testing"
 )
 
 type User struct {
 	Id          int    `gorm:"primary_key;auto_increment" json:"id"`
 	ConnectedAt string `gorm:"size:255" json:"connected_at"`
-	Nickname    string `gorm:"size:255;not null;unique" json:"nickname"`
+	Nickname    string `gorm:"size:255;" json:"nickname"`
+	Token       string `gorm:"size:255;" json:"token"`
 }
 
-func TestGorm(t *testing.T) {
-	user := &User{
-		ConnectedAt: "2020-04-24",
-		Nickname:    "Harry",
-	}
+var user = &User{
+	Id:          1234,
+	ConnectedAt: "2020-04-24",
+	Nickname:    "Harry",
+	Token:       "asdfsdfasfsf",
+}
 
-	user2 := &User{
-		ConnectedAt: "2020-04-24",
-		Nickname:    "minkuk",
-	}
+// JUnit처럼 Transaction으로 테스트하는 방법이 없으려나
+func TestInsert(t *testing.T) {
+
+	//user2 := &User{
+	//	Id:          5678,
+	//	ConnectedAt: "2020-04-24",
+	//	Nickname:    "minkuk",
+	//	Token:       "ggawtwerqrwqr",
+	//}
 
 	tx := GormClient.Begin()
-	defer tx.Rollback()
 
-	err := tx.Debug().AutoMigrate(&user).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+	tx.Debug().Create(&user)
+}
 
-	err = tx.Debug().Create(&user).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+func TestFindFirst(t *testing.T) {
+	tx := GormClient.Begin()
 
-	err = tx.Debug().Create(&user2).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+	tx.Debug().Create(&user)
 
-	err = tx.Debug().First(&user).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+	var target User
+
+	tx.Debug().First(&target)
+	fmt.Println(target)
 }

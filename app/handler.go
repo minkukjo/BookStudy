@@ -2,8 +2,11 @@ package app
 
 import (
 	"bookstudy/db"
+	"bookstudy/model"
+	"bookstudy/redis"
 	"context"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/oauth2"
 	"log"
 	"net/http"
@@ -11,11 +14,6 @@ import (
 )
 
 // Nested 처리는 아래와 같이 내부 구조체를 선언함으로써 가능
-type User struct {
-	Id          int    `json:"id"`
-	ConnectedAt string `json:"connected_at"`
-	Nickname    string `json:"nickname"`
-}
 
 var (
 	state = "login"
@@ -37,7 +35,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u, http.StatusTemporaryRedirect)
 }
 
-func getUserInform(token *oauth2.Token) User {
+func getUserInform(token *oauth2.Token) model.User {
 	rq, err := http.NewRequest("GET", "https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -53,10 +51,14 @@ func getUserInform(token *oauth2.Token) User {
 	userJson := make(map[string]interface{})
 	json.NewDecoder(resp.Body).Decode(&userJson)
 	properties := userJson["properties"].(map[string]interface{})
-	user := User{
-		Id:          0,
+
+	fmt.Print()
+
+	user := model.User{
+		Id:          int(userJson["id"].(float64)),
 		ConnectedAt: userJson["connected_at"].(string),
 		Nickname:    properties["nickname"].(string),
+		Token:       token.AccessToken,
 	}
 	return user
 }
@@ -80,15 +82,12 @@ func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 
 	user := getUserInform(token)
 
-	err = db.RedisClient.Set(token.AccessToken, user.Nickname, 0).Err()
+	err = redis.RedisClient.Set(token.AccessToken, user.Nickname, 0).Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	//http.SetCookie(w,&http.Cookie{
-	//	Name: "access_token",
-	//	Value: token.AccessToken,
-	//	Expires: time.Now().Add(15 * time.Second),
-	//})
+
+	db.Insert(&user)
 
 	http.Redirect(w, r, "/main"+"?access_token="+token.AccessToken, http.StatusTemporaryRedirect)
 }
@@ -105,7 +104,7 @@ func Authenticator(next http.Handler) http.Handler {
 			return
 		}
 
-		userName, _ := db.RedisClient.Get(token).Result()
+		userName, _ := redis.RedisClient.Get(token).Result()
 
 		if userName == "" {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
