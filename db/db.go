@@ -33,7 +33,7 @@ func InsertUser(object model.User) {
 	}()
 
 	alreadyObj := object
-	if FindFirstUser(alreadyObj) {
+	if FindFirstUser(&alreadyObj) {
 		tx.Model(&object).Debug().Update("token", object.Token)
 		tx.Commit()
 		return
@@ -47,7 +47,7 @@ func InsertUser(object model.User) {
 	tx.Commit()
 }
 
-func FindFirstUser(object model.User) bool {
+func FindFirstUser(object *model.User) bool {
 
 	tx := GormClient.Begin()
 	defer func() {
@@ -56,7 +56,7 @@ func FindFirstUser(object model.User) bool {
 		}
 	}()
 
-	if tx.Debug().First(&object).RecordNotFound() {
+	if tx.Debug().First(object).RecordNotFound() {
 		return false
 	}
 

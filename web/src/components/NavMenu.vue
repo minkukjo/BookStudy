@@ -10,7 +10,7 @@
     <el-submenu index="3" style="float: right">
       <template slot="title"><i class="el-icon-user"></i></template>
       <el-menu-item index="3-1">My Account</el-menu-item>
-      <el-menu-item index="3-2">Logout</el-menu-item>
+      <el-menu-item index="3-2"><a href="/logout">Logout</a></el-menu-item>
     </el-submenu>
   </el-menu>
 </template>
@@ -51,5 +51,9 @@ export default {
 </script>
 
 <style>
-
+  .el-menu-item a {
+    display: block;
+    text-decoration: none;
+    color: white;
+  }
 </style>

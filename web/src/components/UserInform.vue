@@ -1,14 +1,22 @@
 <template>
   <el-card shadow="always" class="box-card" style="margin-top: 30px;">
-    <div v-for="o in 4" :key="o" class="text item">
-      {{'List item ' + o }}
+    <div v-for="o in this.userData" :key="o" class="text item">
+      {{ o }}
     </div>
   </el-card>
 </template>
 
 <script>
 export default {
-  name: 'UserInform'
+  name: 'UserInform',
+  props: {
+    propUserData: Object
+  },
+  data: function () {
+    return {
+      userData: this.propUserData
+    }
+  }
 }
 </script>
 

@@ -1,15 +1,17 @@
 package app
 
 import (
+	"bookstudy/db"
 	"bookstudy/model"
 	"bookstudy/redis"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-chi/jwtauth"
 	"golang.org/x/oauth2"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -18,7 +20,7 @@ import (
 var (
 	state = "login"
 
-	defaultAuthCookieName = "user_token"
+	defaultAuthCookieName = "user_id"
 	defaultSessionExpire  = 6 * time.Hour
 
 	conf = &oauth2.Config{
@@ -40,7 +42,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 func getUserInform(accessToken string) model.User {
 
-	resp, err := request("https://kapi.kakao.com/v2/user/me", accessToken)
+	resp, err := request("https://kapi.kakao.com/v2/user/me", accessToken, "GET")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,9 +66,6 @@ func getUserInform(accessToken string) model.User {
 	return user
 }
 
-// 지금은 userId를 최초로 parameter argument로만 넘겨서 인증하고 있음
-// 이렇게하면 프론트에서 페이지를 이동할 때 마다 검사가 이뤄지지 않음.
-// 결국 다른 방법을 생각해봐야함
 func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 	state := r.FormValue("state")
 	if state != "login" {
@@ -85,7 +84,7 @@ func HandleCallBack(w http.ResponseWriter, r *http.Request) {
 	client := conf.Client(ctx, token)
 	_ = client
 
-	http.Redirect(w, r, "/temp?token="+token.AccessToken, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/session?token="+token.AccessToken, http.StatusTemporaryRedirect)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -93,44 +92,122 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
 
+	accessToken, err := redis.RedisClient.Get(cookie.Value).Result()
+
+	if accessToken == "" || err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	resp, err := request("https://kapi.kakao.com/v1/user/unlink", accessToken, "POST")
+	bodyBtytes, err := ioutil.ReadAll(resp.Body)
+	log.Println(string(bodyBtytes))
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	deleteSession(w)
+
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		strings := r.Header["Cookie"]
-		token, claims, err := jwtauth.FromContext(r.Context())
-		fmt.Println("this is user id ------")
-		fmt.Println(token)
-		fmt.Println(strings)
-		fmt.Println(claims["user_token"])
+		cookie, err := r.Cookie("user_id")
 		if err != nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
 
-		Id := r.FormValue("Id")
+		accessToken, err := redis.RedisClient.Get(cookie.Value).Result()
 
-		if Id == "" {
+		if accessToken == "" || err != nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
 
-		accessToken, _ := redis.RedisClient.Get(Id).Result()
-
-		if accessToken == "" {
-			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-			return
-		}
-
-		resp, err := request("https://kapi.kakao.com/v1/user/access_token_info", accessToken)
+		// 토큰 유효성 검사
+		_, err = request("https://kapi.kakao.com/v1/user/access_token_info", accessToken, "GET")
 		if err != nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
-		defer resp.Body.Close()
 
 		// Token is authenticated, pass it through
 		next.ServeHTTP(w, r)
 	})
+}
+
+// redis 저장, DB 저장
+// redis의 용도는 토큰 유효성 검사 시 조금 더 효율적으로 하기 위함
+func HandleSession(w http.ResponseWriter, r *http.Request) {
+
+	accessToken := r.FormValue("token")
+
+	user := getUserInform(accessToken)
+
+	err := redis.RedisClient.Set(strconv.Itoa(user.Id), accessToken, 0).Err()
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	db.InsertUser(user)
+
+	cookie := &http.Cookie{
+		Name:     defaultAuthCookieName,
+		Value:    strconv.Itoa(user.Id),
+		Expires:  time.Now().Add(defaultSessionExpire),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, cookie)
+
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+func deleteSession(w http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:     defaultAuthCookieName,
+		Value:    "none",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, cookie)
+}
+
+func HandleUserInform(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	id, err := strconv.Atoi(cookie.Value)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	user := model.User{
+		Id: id,
+	}
+
+	if !db.FindFirstUser(&user) {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func request(url string, accessToken string) (*http.Response, error) {
-	rq, err := http.NewRequest("GET", url, nil)
+func request(url string, accessToken string, method string) (*http.Response, error) {
+	rq, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
