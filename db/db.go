@@ -23,7 +23,7 @@ func init() {
 	}
 }
 
-func Insert(object interface{}) {
+func InsertUser(object model.User) {
 
 	tx := GormClient.Begin()
 	defer func() {
@@ -32,16 +32,22 @@ func Insert(object interface{}) {
 		}
 	}()
 
-	if err := tx.Debug().Create(object).Error; err != nil {
+	alreadyObj := object
+	if FindFirstUser(alreadyObj) {
+		tx.Model(&object).Debug().Update("token", object.Token)
+		tx.Commit()
+		return
+	}
+
+	if err := tx.Debug().Create(&object).Error; err != nil {
 		tx.Rollback()
-		log.Fatal(err)
 		return
 	}
 
 	tx.Commit()
 }
 
-func FindFirst(object interface{}) {
+func FindFirstUser(object model.User) bool {
 
 	tx := GormClient.Begin()
 	defer func() {
@@ -50,15 +56,11 @@ func FindFirst(object interface{}) {
 		}
 	}()
 
-	if tx.Debug().First(object).RecordNotFound() {
-		log.Println("못찾음")
+	if tx.Debug().First(&object).RecordNotFound() {
+		return false
 	}
 
-	if err := tx.Debug().First(object).Error; err != nil {
-		tx.Rollback()
-		log.Fatal(err)
-		return
-	}
+	tx.Rollback()
 
-	tx.Commit()
+	return true
 }

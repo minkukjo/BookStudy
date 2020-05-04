@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bookstudy/model"
 	"fmt"
 	"testing"
 )
@@ -12,7 +13,7 @@ type User struct {
 	Token       string `gorm:"size:255;" json:"token"`
 }
 
-var user = &User{
+var user = model.User{
 	Id:          1234,
 	ConnectedAt: "2020-04-24",
 	Nickname:    "Harry",
@@ -43,4 +44,14 @@ func TestFindFirst(t *testing.T) {
 
 	tx.Debug().First(&target)
 	fmt.Println(target)
+}
+
+func TestDuplicated(t *testing.T) {
+	InsertUser(user)
+
+	// 토근 값 변경 후 다시 재 시도
+	user.Token = "1324253"
+
+	InsertUser(user)
+
 }
