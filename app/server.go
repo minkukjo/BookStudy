@@ -22,6 +22,8 @@ func NewRouter() *chi.Mux {
 
 		r.HandleFunc("/api/write", HandleWrite)
 
+		r.HandleFunc("/api/posts", HandlePosts)
+
 		r.HandleFunc("/logout", logoutHandler)
 	})
 

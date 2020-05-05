@@ -7,4 +7,5 @@ type Post struct {
 	Date   string `json:"date"`
 	Text   string `json:"text"`
 	Name   string `json:"name"`
+	Kind   string `json:"kind"`
 }

@@ -2,7 +2,7 @@
   <div class="general">
     <NavMenu :prop-index="activeIndex"></NavMenu>
     <Title :prop-title="title"></Title>
-    <Board :board-name="boardName"></Board>
+    <Board v-if="posts" :prop-posts="posts" :prop-board-name="boardName"></Board>
   </div>
 </template>
 
@@ -13,7 +13,19 @@ export default {
     return {
       activeIndex: '2-1',
       title: '자유 게시판',
-      boardName: 'general'
+      boardName: 'general',
+      posts: []
+    }
+  },
+  created () {
+    this.getAllPosts()
+  },
+  methods: {
+    getAllPosts: function () {
+      this.$http.get(this.$http_url + '/api/posts?kind=general')
+        .then((response) => {
+          this.posts = response.data
+        })
     }
   }
 }

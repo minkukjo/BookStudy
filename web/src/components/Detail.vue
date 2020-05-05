@@ -3,30 +3,31 @@
     <div slot="header" class="clearfix">
       <el-row>
         <el-col :span="18">
-          <div class="title"><i v-on:click="goBack" class="el-icon-back"></i> {{tableData.title}}</div>
+          <div class="title"><i v-on:click="goBack" class="el-icon-back"></i> {{postData.title}}</div>
         </el-col>
-        <el-col :span="6"><div class="writerDate">{{tableData.name}} </div><div class="writerDate">{{tableData.date}}</div></el-col>
+        <el-col :span="6"><div class="writerDate">{{postData.name}}</div><div class="writerDate">{{postData.date}}</div></el-col>
       </el-row>
     </div>
     <div class="textBox">
       <div class="text item">
-        {{tableData.text}}
+        {{postData.text}}
       </div>
     </div>
   </el-card>
 </template>
 
 <script>
+
 import Board from './Board'
+
 export default {
   name: 'Detail',
   props: {
     propBoardName: String
   },
   data () {
-    const index = this.$route.params.id - 1
     return {
-      tableData: Board.data().tableData[index],
+      postData: null,
       boardName: this.propBoardName
     }
   },
@@ -36,6 +37,13 @@ export default {
         this.$router.push(`/main/${this.boardName}`)
       }
     }
+  },
+  created () {
+    const index = this.$route.params.id
+    console.log(index)
+
+    const findPost = Board.methods.findPost(index)
+    console.log(findPost)
   }
 }
 </script>

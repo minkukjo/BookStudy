@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"golang.org/x/oauth2"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -103,9 +102,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := request("https://kapi.kakao.com/v1/user/unlink", accessToken, "POST")
-	bodyBtytes, err := ioutil.ReadAll(resp.Body)
-	log.Println(string(bodyBtytes))
+	_, err = request("https://kapi.kakao.com/v1/user/logout", accessToken, "POST")
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
@@ -244,6 +241,17 @@ func HandleWrite(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.InsertPost(&post)
+}
 
-	log.Println(db.FindAllPosts())
+func HandlePosts(w http.ResponseWriter, r *http.Request) {
+	param := r.URL.Query().Get("kind")
+
+	posts := db.FindAllPosts("kind", param)
+
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(&posts)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
 }

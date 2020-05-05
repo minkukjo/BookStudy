@@ -76,12 +76,12 @@ func InsertPost(object *model.Post) {
 	tx.Commit()
 }
 
-func FindAllPosts() []model.Post {
+func FindAllPosts(query string, arg string) []model.Post {
 
 	var posts []model.Post
 	tx := GormClient.Begin()
 
-	if err := tx.Debug().Find(&posts).Error; err != nil {
+	if err := tx.Debug().Where(query+" = ?", arg).Find(&posts).Error; err != nil {
 		tx.Rollback()
 		return nil
 	}
