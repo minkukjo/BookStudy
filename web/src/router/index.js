@@ -6,6 +6,7 @@ import Study from '../views/Study'
 import Qna from '../views/Qna'
 import User from '../views/User'
 import GeneralDetail from '../views/GeneralDetail'
+import Write from '../views/Write'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,11 @@ const routes = [
     path: '/main/user',
     name: 'user',
     component: User
+  },
+  {
+    path: '/main/write',
+    name: 'write',
+    component: Write
   }
 ]
 

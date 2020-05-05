@@ -56,4 +56,8 @@ export default {
     text-decoration: none;
     color: white;
   }
+
+  .el-submenu__title i {
+    color: white;
+  }
 </style>

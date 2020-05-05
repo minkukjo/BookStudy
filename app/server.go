@@ -20,6 +20,8 @@ func NewRouter() *chi.Mux {
 
 		r.HandleFunc("/api/user", HandleUserInform)
 
+		r.HandleFunc("/api/write", HandleWrite)
+
 		r.HandleFunc("/logout", logoutHandler)
 	})
 

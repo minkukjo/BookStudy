@@ -18,7 +18,7 @@ func init() {
 	}
 	GormClient = db
 
-	if err := GormClient.Debug().AutoMigrate(&model.User{}).Error; err != nil {
+	if err := GormClient.Debug().AutoMigrate(&model.User{}, &model.Post{}).Error; err != nil {
 		log.Fatal(err)
 	}
 }
@@ -63,4 +63,30 @@ func FindFirstUser(object *model.User) bool {
 	tx.Rollback()
 
 	return true
+}
+
+func InsertPost(object *model.Post) {
+	tx := GormClient.Begin()
+
+	if err := tx.Debug().Create(&object).Error; err != nil {
+		tx.Rollback()
+		return
+	}
+
+	tx.Commit()
+}
+
+func FindAllPosts() []model.Post {
+
+	var posts []model.Post
+	tx := GormClient.Begin()
+
+	if err := tx.Debug().Find(&posts).Error; err != nil {
+		tx.Rollback()
+		return nil
+	}
+
+	tx.Commit()
+
+	return posts
 }

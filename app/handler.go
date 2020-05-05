@@ -15,8 +15,6 @@ import (
 	"time"
 )
 
-// Nested 처리는 아래와 같이 내부 구조체를 선언함으로써 가능
-
 var (
 	state = "login"
 
@@ -210,4 +208,42 @@ func HandleUserInform(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
+}
+
+func HandleWrite(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	id, err := strconv.Atoi(cookie.Value)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	user := model.User{
+		Id: id,
+	}
+
+	if !db.FindFirstUser(&user) {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	post := model.Post{
+		UserId: user.Id,
+		Date:   time.Now().Format("2006-01-02"),
+		Name:   user.Nickname,
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&post)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db.InsertPost(&post)
+
+	log.Println(db.FindAllPosts())
 }
