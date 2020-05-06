@@ -12,8 +12,13 @@ import Board from './components/Board'
 import NavMenu from './components/NavMenu'
 import Detail from './components/Detail'
 import Title from './components/Title'
+import Axios from 'axios'
 
 Vue.config.productionTip = false
+
+// Axios
+Vue.prototype.$http = Axios
+Vue.prototype.$http_url = 'http://localhost:9090'
 
 // UI
 Vue.use(ElementUI, { lang })

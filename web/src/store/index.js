@@ -4,6 +4,8 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+const url = 'http://localhost:9090'
+
 export default new Vuex.Store({
   state: {
     posts: []
@@ -15,9 +17,8 @@ export default new Vuex.Store({
   },
   actions: {
     loadPostsFromServer: function (context, kind) {
-      axios.get('http://localhost:9090/api/posts?kind=' + kind)
+      axios.get(url + '/api/posts?kind=' + kind)
         .then((response) => {
-          console.log(response.data)
           context.commit('setPosts', response.data)
         }).catch(err => {
           console.log(err)
@@ -29,7 +30,6 @@ export default new Vuex.Store({
       return state.posts
     },
     getPostById: (state) => (id) => {
-      console.log(id)
       return state.posts.find(item => item.id === id)
     }
   },

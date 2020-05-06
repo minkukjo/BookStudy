@@ -25,10 +25,6 @@ export default {
       this.$http.get(this.$http_url + '/api/user')
         .then((response) => {
           console.log(response.data)
-          console.log(response.data.id)
-          console.log(response.data.connected_at)
-          console.log(response.data.nickname)
-          console.log(response.data.token)
           this.userData = response.data
         })
         .catch(function (error) {
