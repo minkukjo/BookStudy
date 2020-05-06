@@ -8,7 +8,7 @@
 
 - Gorm (ORM)
 
-- Vue.js (Front)
+- Vue.js (Front) + Vuex (상태 관리)
 
 - Redis (DB)
 

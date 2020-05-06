@@ -7,7 +7,6 @@ import Carousel from './components/Carousel'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import lang from 'element-ui/lib/locale/lang/ko'
-import Axios from 'axios'
 import UserInform from './components/UserInform'
 import Board from './components/Board'
 import NavMenu from './components/NavMenu'
@@ -15,10 +14,6 @@ import Detail from './components/Detail'
 import Title from './components/Title'
 
 Vue.config.productionTip = false
-
-// Axios
-Vue.prototype.$http = Axios
-Vue.prototype.$http_url = 'http://localhost:9090'
 
 // UI
 Vue.use(ElementUI, { lang })

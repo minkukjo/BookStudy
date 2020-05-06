@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="posts"
+    :data="this.$store.getters.getPosts"
     style="width: 100%; margin-top: 30px;"
     @cell-click="handlerClick"
     empty-text="게시글이 없습니다.">
@@ -25,23 +25,22 @@
 export default {
   name: 'Board',
   props: {
-    propBoardName: String,
-    propPosts: Array
+    propBoardName: String
   },
   data: function () {
     return {
-      posts: this.propPosts,
       boardName: this.propBoardName
     }
   },
+  created () {
+    this.getAllPosts()
+  },
   methods: {
     handlerClick: function (row) {
-      this.$router.push(`/main/${this.boardName}/${row.Id}`)
-    }
-  },
-  watch: {
-    propPosts () {
-      this.posts = this.propPosts
+      this.$router.push(`/main/${this.boardName}/${row.id}`)
+    },
+    getAllPosts () {
+      this.$store.dispatch('loadPostsFromServer', this.boardName)
     }
   }
 }
