@@ -1,16 +1,14 @@
 <template>
-  <div class="qna">
-    <Title :prop-title="title"></Title>
-    <Board :prop-board-name="boardName"></Board>
+  <div class="qnaDetail">
+    <Detail :prop-board-name="boardName"></Detail>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Qna',
+  name: 'QnaDetail',
   data: function () {
     return {
-      title: '질문 게시판',
       boardName: 'qna'
     }
   }

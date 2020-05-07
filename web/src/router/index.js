@@ -7,49 +7,60 @@ import Qna from '../views/Qna'
 import User from '../views/User'
 import GeneralDetail from '../views/GeneralDetail'
 import Write from '../views/Write'
+import QnaDetail from '../views/QnaDetail'
+import StudyDetail from '../views/StudyDetail'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/main',
+    path: '/',
     name: 'Main',
     component: Main
   },
   {
-    path: '/main/general',
+    path: '/general',
     name: 'general',
     component: General
   },
   {
-    path: '/main/general/:id',
+    path: '/general/:id',
     name: 'generalDetail',
     component: GeneralDetail
   },
   {
-    path: '/main/study',
+    path: '/study',
     name: 'study',
     component: Study
   },
   {
-    path: '/main/qna',
+    path: '/study/:id',
+    name: 'studyDetail',
+    component: StudyDetail
+  },
+  {
+    path: '/qna',
     name: 'qna',
     component: Qna
   },
   {
-    path: '/main/user',
+    path: '/qna/:id',
+    name: 'qnaDetail',
+    component: QnaDetail
+  },
+  {
+    path: '/user',
     name: 'user',
     component: User
   },
   {
-    path: '/main/write',
+    path: '/write',
     name: 'write',
     component: Write
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

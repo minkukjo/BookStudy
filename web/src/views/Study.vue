@@ -1,6 +1,5 @@
 <template>
   <div class="study">
-    <NavMenu :prop-index="activeIndex"></NavMenu>
     <Title :prop-title="title"></Title>
     <Board :prop-board-name="boardName"></Board>
   </div>

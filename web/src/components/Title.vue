@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     handlerClick: function () {
-      this.$router.push('/main/write')
+      this.$router.push('/write')
     }
   }
 }

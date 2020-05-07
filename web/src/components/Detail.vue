@@ -31,7 +31,7 @@ export default {
   methods: {
     goBack () {
       if (this.boardName !== undefined) {
-        this.$router.push(`/main/${this.boardName}`)
+        this.$router.push(`/${this.boardName}`)
       }
     }
   },

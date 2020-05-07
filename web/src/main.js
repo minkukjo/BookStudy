@@ -9,7 +9,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import lang from 'element-ui/lib/locale/lang/ko'
 import UserInform from './components/UserInform'
 import Board from './components/Board'
-import NavMenu from './components/NavMenu'
 import Detail from './components/Detail'
 import Title from './components/Title'
 import Axios from 'axios'
@@ -27,7 +26,6 @@ Vue.use(ElementUI, { lang })
 Vue.component(Carousel.name, Carousel)
 Vue.component(UserInform.name, UserInform)
 Vue.component(Board.name, Board)
-Vue.component(NavMenu.name, NavMenu)
 Vue.component(Detail.name, Detail)
 Vue.component(Title.name, Title)
 

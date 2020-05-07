@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <NavMenu :prop-index="activeIndex"></NavMenu>
     <el-collapse-transition>
       <Carousel></Carousel>
     </el-collapse-transition>

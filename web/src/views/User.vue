@@ -1,6 +1,5 @@
 <template>
   <div class="userInform">
-    <NavMenu :prop-index="activeIndex"></NavMenu>
     <el-collapse-transition v-if="userData !== null">
       <UserInform :prop-user-data="userData" ></UserInform>
     </el-collapse-transition>

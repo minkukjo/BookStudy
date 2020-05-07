@@ -1,15 +1,15 @@
 <template>
-  <div class="generalDetail">
+  <div class="studyDetail">
     <Detail :prop-board-name="boardName"></Detail>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'GeneralDetail',
+  name: 'StudyDetail',
   data: function () {
     return {
-      boardName: 'general'
+      boardName: 'study'
     }
   }
 }

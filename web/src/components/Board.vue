@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     handlerClick: function (row) {
-      this.$router.push(`/main/${this.boardName}/${row.id}`)
+      this.$router.push(`/${this.boardName}/${row.id}`)
     },
     getAllPosts () {
       this.$store.dispatch('loadPostsFromServer', this.boardName)
