@@ -16,6 +16,11 @@ export default new Vuex.Store({
   },
   mutations: {
     setPosts: function (state, payload) {
+      if (payload.length > 1) {
+        payload.sort(function (a, b) {
+          return a.id > b.id ? -1 : a.id < b.id ? 1 : 0
+        })
+      }
       state.posts = payload
     }
   },

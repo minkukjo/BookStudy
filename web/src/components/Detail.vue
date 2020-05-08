@@ -1,19 +1,29 @@
 <template>
-  <el-card class="box-card">
-    <div slot="header" class="clearfix">
-      <el-row>
-        <el-col :span="18">
-          <div class="title"><i v-on:click="goBack" class="el-icon-back"></i> {{post.title}}</div>
-        </el-col>
-        <el-col :span="6"><div class="writerDate">{{post.name}}</div><div class="writerDate">{{post.date}}</div></el-col>
-      </el-row>
-    </div>
-    <div class="textBox">
-      <div class="text item">
-        {{post.text}}
+  <div class="content">
+    <div class="head">
+      <i class="el-icon-back" @click="goBack"></i>
+      <i class="el-icon-delete"></i>
+      <div>
+        <div class="name">
+          {{post.name}}
+        </div>
+        {{post.date}}
       </div>
     </div>
-  </el-card>
+    <div class="content-main">
+      <div class="content-body">
+        <div class="title">
+          {{post.title}}
+        </div>
+        <div class="text">
+          {{post.text}}
+        </div>
+      </div>
+      <div class="content-function">
+        추천버튼
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -33,6 +43,14 @@ export default {
       if (this.boardName !== undefined) {
         this.$router.push(`/${this.boardName}`)
       }
+    },
+    isWriter () {
+      const index = parseInt(this.$route.params.id)
+      const post = this.$store.getters.getPostById(index)
+      if (index === post.id) {
+        return true
+      }
+      return false
     }
   },
   computed: {
@@ -45,40 +63,83 @@ export default {
 </script>
 
 <style scoped>
+
+  .content-body{
+    float: left;
+    position:relative;
+    border-right: 1px solid white !important;
+    width: 700px;
+    border-right: white;
+    padding: 15px;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  .content-function{
+    float: right;
+    position:relative;
+    text-align: center;
+    width: 100px;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  .el-icon-delete{
+    float: right;
+    vertical-align: middle;
+    font-size: 20px;
+  }
+
+  .name{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    max-width: 200px;
+    min-width: 50px;
+  }
+
   .el-icon-back {
     cursor: pointer;
+    font-size: 25px;
   }
-  .text {
+
+  .content {
+    border: 1px solid white;
+    text-align: left;
+    width: 800px;
+    min-height: 800px;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  .head{
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 10px;
+    border-bottom: 1px solid white;
+  }
+
+  .content-main{
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .title{
+    border-bottom: 1px solid white;
     font-size: 20px;
-    text-align: left;
-  }
-
-  .item {
-    margin-bottom: 18px;
-  }
-
-  .clearfix {
-    text-align: left;
-    color: white;
-  }
-
-  .box-card {
-    margin-top: 30px;
-    width: 1300px;
-    height: 700px;
-  }
-
-  .title {
-    margin-top: 30px;
-    font-size: 30px;
     font-weight: bold;
-    text-align: left;
   }
 
-  .writerDate {
+  .text{
+    width: 662px;
+    overflow: auto;
+    min-height: 180px;
     margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    text-align: right;
+    font-size: 15px;
+
   }
+
 </style>
