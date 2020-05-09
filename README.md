@@ -8,6 +8,26 @@
 
 ![main](https://user-images.githubusercontent.com/43809168/81484162-8863d500-927e-11ea-87f9-0a7d18974333.gif)
 
+## Create
+
+![Create](https://user-images.githubusercontent.com/43809168/81484232-e690b800-927e-11ea-86cc-bd9996e15529.gif)
+
+## Read
+
+![Read](https://user-images.githubusercontent.com/43809168/81484234-e85a7b80-927e-11ea-896e-433d34c099bb.gif)
+
+## Update
+
+![Update](https://user-images.githubusercontent.com/43809168/81484281-4edf9980-927f-11ea-91cd-95227c2ddb60.gif)
+
+## Delete
+
+![삭제](https://user-images.githubusercontent.com/43809168/81484238-edb7c600-927e-11ea-8b69-1f033cb4993c.gif)
+
+## 사용자 정보 조회 & 로그아웃
+
+![last](https://user-images.githubusercontent.com/43809168/81484241-f3151080-927e-11ea-912c-a2b1a22278ff.gif)
+
 ## Task List
 
 -[ ] 글 종류 수정하고 Nav Bar는 이전 상태 그대로 남아있는 이슈있음
