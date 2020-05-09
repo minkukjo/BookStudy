@@ -2,7 +2,7 @@
   <div style="text-align: left; margin-top: 20px; font-weight: bold">
   {{this.title}}
     <div style="float: right">
-      <el-button type="info" @click="handlerClick" icon="el-icon-edit"></el-button>
+      <el-button type="info" @click="handlerClick" icon="el-icon-edit-outline"></el-button>
     </div>
   </div>
 </template>

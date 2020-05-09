@@ -154,7 +154,7 @@ func HandleSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.InsertUser(user)
+	db.CreateUser(user)
 
 	cookie := &http.Cookie{
 		Name:     defaultAuthCookieName,
@@ -207,7 +207,7 @@ func HandleUserInform(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HandleWrite(w http.ResponseWriter, r *http.Request) {
+func HandlePost(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
@@ -240,10 +240,10 @@ func HandleWrite(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	db.InsertPost(&post)
+	db.CreatePost(&post)
 }
 
-func HandlePosts(w http.ResponseWriter, r *http.Request) {
+func HandleGet(w http.ResponseWriter, r *http.Request) {
 	param := r.URL.Query().Get("kind")
 
 	posts := db.FindAllPosts("kind", param)
@@ -254,4 +254,37 @@ func HandlePosts(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
+}
+
+func HandleDelete(w http.ResponseWriter, r *http.Request) {
+	param := r.URL.Query().Get("id")
+
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	err = db.DeletePost(id)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+}
+
+func HandlePut(w http.ResponseWriter, r *http.Request) {
+
+	post := model.Post{}
+
+	err := json.NewDecoder(r.Body).Decode(&post)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = db.UpdatePost(&post)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
 }

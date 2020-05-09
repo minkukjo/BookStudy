@@ -5,7 +5,7 @@ type Post struct {
 	UserId int    `json:"userId"`
 	Title  string `json:"title"`
 	Date   string `json:"date"`
-	Text   string `json:"text"`
+	Text   string `gorm:"type:text" json:"text"`
 	Name   string `json:"name"`
 	Kind   string `json:"kind"`
 }

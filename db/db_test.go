@@ -47,11 +47,11 @@ func TestFindFirst(t *testing.T) {
 }
 
 func TestDuplicated(t *testing.T) {
-	InsertUser(user)
+	CreateUser(user)
 
 	// 토근 값 변경 후 다시 재 시도
 	user.Token = "1324253"
 
-	InsertUser(user)
+	CreateUser(user)
 
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="write" style="margin-top: 30px">
+  <div class="edit" style="margin-top: 30px">
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm" style="width: 40%" >
       <el-form-item label="게시판 종류" prop="kind" >
         <el-select v-model="ruleForm.kind" placeholder="게시판을 선택해주세요." style="float:left;">
@@ -25,13 +25,17 @@
 
 <script>
 export default {
-  name: 'write',
+  name: 'edit',
   data () {
+    const index = parseInt(this.$route.params.id)
+    const post = this.$store.getters.getPostById(index)
+
     return {
       ruleForm: {
-        title: '',
-        text: '',
-        kind: ''
+        id: index,
+        title: post.title,
+        text: post.text,
+        kind: post.kind
       },
       rules: {
         title: [
@@ -50,11 +54,11 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$http.post(this.$http_url + '/api/post', this.ruleForm)
+          this.$http.put(this.$http_url + '/api/post', this.ruleForm)
             .then(() => {
               this.$router.push('/' + this.ruleForm.kind)
             })
-          alert('작성 완료!')
+          alert('수정 완료!')
         } else {
           console.log('error submit!!')
           return false

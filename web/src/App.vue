@@ -54,11 +54,26 @@ a {
     color: white !important;
 }
 
+.el-message-box {
+  background-color: #2c3e50 !important;
+}
+
+.el-message-box__title {
+  color: #f1c40f !important;
+}
+
+.el-message-box__content {
+  color: white !important;
+}
+
+.el-message-box__status.el-icon-warning {
+  color: #f1c40f !important;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #ecf0f1;
 }
 </style>

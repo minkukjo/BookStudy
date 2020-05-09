@@ -9,6 +9,7 @@ import GeneralDetail from '../views/GeneralDetail'
 import Write from '../views/Write'
 import QnaDetail from '../views/QnaDetail'
 import StudyDetail from '../views/StudyDetail'
+import Edit from '../views/Edit'
 
 Vue.use(VueRouter)
 
@@ -57,6 +58,11 @@ const routes = [
     path: '/write',
     name: 'write',
     component: Write
+  },
+  {
+    path: '/edit/:id',
+    name: 'edit',
+    component: Edit
   }
 ]
 

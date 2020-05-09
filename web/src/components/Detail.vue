@@ -1,22 +1,23 @@
 <template>
-  <div class="content">
-    <div class="head">
+  <div class="content clearfix">
+    <div class="head clearfix">
       <i class="el-icon-back" @click="goBack"></i>
-      <i class="el-icon-delete"></i>
-      <div>
+      <i class="el-icon-delete" @click="deletePost"></i>
+      <i class="el-icon-edit" @click="editPost"></i>
+      <div class="content-header">
         <div class="name">
           {{post.name}}
         </div>
         {{post.date}}
       </div>
     </div>
-    <div class="content-main">
+    <div class="content-main clearfix">
       <div class="content-body">
-        <div class="title">
+        <h2 class="title">
           {{post.title}}
-        </div>
-        <div class="text">
-          {{post.text}}
+        </h2>
+        <hr>
+        <div v-html="post.text" class="text">
         </div>
       </div>
       <div class="content-function">
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-
+import _ from 'lodash'
 export default {
   name: 'Detail',
   props: {
@@ -44,6 +45,30 @@ export default {
         this.$router.push(`/${this.boardName}`)
       }
     },
+    editPost () {
+      this.$router.push('/edit/' + this.$route.params.id)
+    },
+    deletePost () {
+      this.$confirm('정말로 게시글을 삭제하시겠습니까?', 'Warning', {
+        confirmButtonText: '삭제',
+        cancelButtonText: '취소',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '삭제 완료되었습니다.'
+        })
+        this.$http.delete(this.$http_url + '/api/post?id=' + this.$route.params.id)
+          .then(() => {
+            this.$router.push(`/${this.boardName}`)
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '삭제 취소되었습니다.'
+        })
+      })
+    },
     isWriter () {
       const index = parseInt(this.$route.params.id)
       const post = this.$store.getters.getPostById(index)
@@ -56,7 +81,10 @@ export default {
   computed: {
     post () {
       const index = parseInt(this.$route.params.id)
-      return this.$store.getters.getPostById(index)
+      const post = this.$store.getters.getPostById(index)
+      const clonePost = _.cloneDeep(post)
+      clonePost.text = clonePost.text.replace(/\n/gim, '<br />')
+      return clonePost
     }
   }
 }
@@ -64,30 +92,49 @@ export default {
 
 <style scoped>
 
+  .content-header{
+    width: 200px;
+  }
+
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
   .content-body{
     float: left;
     position:relative;
     border-right: 1px solid white !important;
     width: 700px;
-    border-right: white;
+    min-height: 730px;
     padding: 15px;
     box-sizing: border-box;
-    display: block;
   }
 
   .content-function{
     float: right;
     position:relative;
     text-align: center;
-    width: 100px;
+    padding-top: 20px;
+    width: 98px;
     box-sizing: border-box;
-    display: block;
   }
 
   .el-icon-delete{
+    clear: both;
     float: right;
     vertical-align: middle;
     font-size: 20px;
+    cursor: pointer;
+  }
+
+  .el-icon-edit {
+    clear: both;
+    float: right;
+    vertical-align: middle;
+    font-size: 20px;
+    cursor: pointer;
   }
 
   .name{
@@ -105,11 +152,11 @@ export default {
 
   .content {
     border: 1px solid white;
-    text-align: left;
     width: 800px;
     min-height: 800px;
     margin-top: 10px;
     margin-left: 10px;
+    box-sizing: border-box;
   }
 
   .head{
@@ -123,23 +170,22 @@ export default {
 
   .content-main{
     position: relative;
-    display: block;
+    overflow: hidden;
     box-sizing: border-box;
   }
 
   .title{
-    border-bottom: 1px solid white;
     font-size: 20px;
     font-weight: bold;
   }
 
   .text{
-    width: 662px;
-    overflow: auto;
+    position: relative;
     min-height: 180px;
+    width: 662px;
     margin-top: 20px;
     font-size: 15px;
-
+    overflow-x: auto;
   }
 
 </style>

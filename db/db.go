@@ -23,7 +23,7 @@ func init() {
 	}
 }
 
-func InsertUser(object model.User) {
+func CreateUser(object model.User) {
 
 	tx := GormClient.Begin()
 	defer func() {
@@ -65,7 +65,7 @@ func FindFirstUser(object *model.User) bool {
 	return true
 }
 
-func InsertPost(object *model.Post) {
+func CreatePost(object *model.Post) {
 	tx := GormClient.Begin()
 
 	if err := tx.Debug().Create(&object).Error; err != nil {
@@ -89,4 +89,39 @@ func FindAllPosts(query string, arg string) []model.Post {
 	tx.Commit()
 
 	return posts
+}
+
+func DeletePost(id int) error {
+	post := model.Post{
+		Id: id,
+	}
+
+	tx := GormClient.Begin()
+
+	if err := tx.Debug().Delete(&post).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
+}
+
+func UpdatePost(object *model.Post) error {
+
+	tx := GormClient.Begin()
+
+	if err := tx.Model(&object).Debug().
+		Update(model.Post{
+			Title: object.Title,
+			Text:  object.Text,
+			Kind:  object.Kind,
+		}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
+
 }

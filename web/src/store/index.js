@@ -26,7 +26,7 @@ export default new Vuex.Store({
   },
   actions: {
     loadPostsFromServer: function (context, kind) {
-      axios.get(url + '/api/posts?kind=' + kind)
+      axios.get(url + '/api/post?kind=' + kind)
         .then((response) => {
           context.commit('setPosts', response.data)
         }).catch(err => {
