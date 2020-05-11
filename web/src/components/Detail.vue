@@ -103,18 +103,15 @@ export default {
   }
 
   .content-body{
-    float: left;
-    position:relative;
+    display: inline-block;
     border-right: 1px solid white !important;
     width: 700px;
-    min-height: 730px;
     padding: 15px;
     box-sizing: border-box;
   }
 
   .content-function{
-    float: right;
-    position:relative;
+    display: inline-block;
     text-align: center;
     padding-top: 20px;
     width: 98px;
