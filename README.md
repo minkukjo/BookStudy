@@ -1,5 +1,11 @@
 # Go + Vue.js 로 만들어보는 게시판 프로젝트
 
+## 데모
+
+[데모](http://34.67.130.46:9090/)
+
+배포환경 GCP + Docker
+
 ## 메인 화면
 
 <img width="1429" alt="스크린샷 2020-05-10 오전 5 08 00" src="https://user-images.githubusercontent.com/43809168/81484159-839f2100-927e-11ea-9f7a-6b5567876193.png">
