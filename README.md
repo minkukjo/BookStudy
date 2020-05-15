@@ -6,6 +6,8 @@
 
 배포환경 GCP + Docker
 
+Cloudbuild CI 구현
+
 ## 메인 화면
 
 <img width="1429" alt="스크린샷 2020-05-10 오전 5 08 00" src="https://user-images.githubusercontent.com/43809168/81484159-839f2100-927e-11ea-9f7a-6b5567876193.png">
