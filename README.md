@@ -43,7 +43,7 @@ Cloudbuild CI 구현
 - [ ] Gitflow 관리 (rebase 사용해서)
 - [ ] 백엔드 중요 로직 테스트 코드 짜기
 - [X] 배포
-- [ ] GCP CI/CD 구축해보기
+- [ ] 배포 자동화
 
 ## 기술 스택
 
@@ -58,6 +58,8 @@ Cloudbuild CI 구현
 - Redis (DB)
 
 - MySQL (DB)
+
+- Docker + GCP + Cloud Build
 
 ## 실행 방법
 
