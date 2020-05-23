@@ -38,12 +38,7 @@ Cloudbuild CI 구현
 
 ## Task List
 
-- [ ] 글 종류 수정하고 Nav Bar는 이전 상태 그대로 남아있는 이슈있음
-- [ ] 사용자 정보 보여주기 더 깔끔하게 수정
-- [ ] Gitflow 관리 (rebase 사용해서)
-- [ ] 백엔드 중요 로직 테스트 코드 짜기
-- [X] 배포
-- [ ] 배포 자동화
+(TaskList)[https://github.com/minkukjo/BookStudy/issues]
 
 ## 기술 스택
 
