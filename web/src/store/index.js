@@ -5,8 +5,6 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-const url = Vue.prototype.$http_url
-
 export default new Vuex.Store({
   plugins: [createPersistedState({
     storage: window.sessionStorage
@@ -26,7 +24,7 @@ export default new Vuex.Store({
   },
   actions: {
     loadPostsFromServer: function (context, kind) {
-      axios.get(url + '/api/post?kind=' + kind)
+      axios.get('/api/post?kind=' + kind)
         .then((response) => {
           context.commit('setPosts', response.data)
         }).catch(err => {
