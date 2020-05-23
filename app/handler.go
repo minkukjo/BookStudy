@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bookstudy/config"
 	"bookstudy/db"
 	"bookstudy/model"
 	"bookstudy/redis"
@@ -27,7 +28,7 @@ var (
 			AuthURL:  "https://kauth.kakao.com/oauth/authorize",
 			TokenURL: "https://kauth.kakao.com/oauth/token",
 		},
-		RedirectURL: "http://34.67.130.46:9090/oauth/authorize",
+		RedirectURL: "http://" + config.Url + ":9090/oauth/authorize",
 		Scopes:      nil,
 	}
 )

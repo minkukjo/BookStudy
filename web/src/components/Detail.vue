@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="content-function">
-        추천버튼
+        추천버튼 자리
       </div>
     </div>
   </div>

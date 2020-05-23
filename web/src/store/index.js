@@ -5,7 +5,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-const url = 'http://34.67.130.46:9090'
+const url = Vue.prototype.$http_url
 
 export default new Vuex.Store({
   plugins: [createPersistedState({
