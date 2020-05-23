@@ -1,8 +1,9 @@
 package main
 
-import "bookstudy/app"
+import (
+	"bookstudy/app"
+)
 
 func main() {
-
 	new(app.App).Run()
 }

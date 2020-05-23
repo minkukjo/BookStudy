@@ -17,7 +17,8 @@ Vue.config.productionTip = false
 
 // Axios
 Vue.prototype.$http = Axios
-Vue.prototype.$http_url = 'http://34.67.130.46:9090'
+Vue.prototype.$http_url = 'http://localhost:9090'
+// Vue.prototype.$http_url = 'http://34.67.130.46:9090'
 
 // UI
 Vue.use(ElementUI, { lang })

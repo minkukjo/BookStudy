@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bookstudy/config"
 	"bookstudy/model"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -10,7 +11,14 @@ import (
 var GormClient *gorm.DB
 
 func init() {
-	db, err := gorm.Open("mysql", "root:1234@tcp(mysqldb)/kakao?charset=utf8&parseTime=True")
+	var db *gorm.DB
+	var err error
+	if *(config.Config) == "local" {
+		db, err = gorm.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/kakao?charset=utf8&parseTime=True")
+	} else {
+		db, err = gorm.Open("mysql", "root:1234@tcp(mysqldb)/kakao?charset=utf8&parseTime=True")
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	} else {
