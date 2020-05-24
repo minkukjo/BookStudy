@@ -116,6 +116,7 @@ export default {
     padding-top: 20px;
     width: 98px;
     box-sizing: border-box;
+    vertical-align: top;
   }
 
   .el-icon-delete{
@@ -150,7 +151,6 @@ export default {
   .content {
     border: 1px solid white;
     width: 800px;
-    min-height: 800px;
     margin-top: 10px;
     margin-left: 10px;
     box-sizing: border-box;
@@ -177,12 +177,10 @@ export default {
   }
 
   .text{
-    position: relative;
-    min-height: 180px;
+    min-height: 600px;
     width: 662px;
     margin-top: 20px;
     font-size: 15px;
-    overflow-x: auto;
   }
 
 </style>
