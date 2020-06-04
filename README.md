@@ -38,7 +38,7 @@ Cloudbuild CI 구현
 
 ## Task List
 
-(TaskList)[https://github.com/minkukjo/BookStudy/issues]
+[TaskList](https://github.com/minkukjo/BookStudy/issues)
 
 ## 기술 스택
 
